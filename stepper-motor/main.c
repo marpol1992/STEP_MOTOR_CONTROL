@@ -31,7 +31,7 @@ int main(void)
 		PORTE.DIRCLR    =   PIN5_bm;
 		PORTE.PIN5CTRL	=	PORT_OPC_PULLUP_gc;	
 		STEPMOTOR_INIT(&_obj);
-		STEPMOTOR_move_forward(&_obj,4,1);
+		STEPMOTOR_move_forward(&_obj,10,1);
     /* Replace with your application code */
 	sei();    
     while (1) 
@@ -43,7 +43,7 @@ int main(void)
 				if((licz>15100)&&(PORTE.IN & PIN5_bm)){
 					licz=0;
 					TCC0.PER=TCC0.PER-1;
-					STEPMOTOR_move_backwards(&_obj,4,1);
+					STEPMOTOR_move_backwards(&_obj,20,1);
 					break;
 				}
 				
@@ -57,7 +57,6 @@ int main(void)
 	}
 }
 
-static uint8_t counter = 0;
 ISR(TCC0_OVF_vect)
 {   
 	STEPMOTOR_PROCESS(&_obj);

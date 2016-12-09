@@ -14,39 +14,37 @@ STEPPER_INFO STEPMOTOR_INIT(STEPPER_OBJECT *_obj){
 	_obj->steps_counter = 0;
 	_obj->speed = 0;
 	_obj->delay = 0;
-	
+	return ROTATION_DONE;
 }
 
-void lengtht_toStep(STEPPER_OBJECT *_obj){
+STEPPER_INFO lenght_toStep(STEPPER_OBJECT *_obj){
  
- _obj->distance_step_counter=((_obj->distance)/ONEROTATION_LENGTH)*ONEROTATION_TOSTEP;
-
+	_obj->distance_step_counter=((_obj->distance)/ONEROTATION_LENGTH)*ONEROTATION_TOSTEP*8;
+	return PROCESS_OK;
 }
-STEPMOTOR_PROCESS_STATE STEPMOTOR_getState(STEPPER_OBJECT* _obj){
+STEPMOTOR_PROCESS_STATE STEPMOTOR_getState(STEPPER_OBJECT *_obj){
 	return _obj->internalState;
 }
 
 
 STEPPER_INFO STEPMOTOR_move_forward(STEPPER_OBJECT *_obj, uint16_t distance, uint16_t speed){
- _obj->distance = distance;
- _obj->speed	= speed;
-_obj->coil_switch_counter = 0;
-_obj->internalState = MOVE_FORWARD_STATE;
-
-
+	_obj->distance = distance;
+	_obj->speed	= speed;
+	_obj->coil_switch_counter = 0;
+	if(lenght_toStep(_obj));
+	_obj->internalState = MOVE_FORWARD_STATE;
+	_obj->steps_counter = 0;
+	return ROTATION_RUN;
 }
 
 STEPPER_INFO STEPMOTOR_move_backwards(STEPPER_OBJECT *_obj, uint16_t distance, uint16_t speed){
 	_obj->distance = distance;
 	_obj->speed	= speed;
 	_obj->coil_switch_counter = 0;
+	lenght_toStep(_obj);
 	_obj->internalState = MOVE_BACKWORDS_STATE;
-	//if(_obj->internalState == MOVE_FORWARD_STATE){
-		//return ROTATION_ERROR;
-		//}else{
-		//_obj->internalState = MOVE_BACKWORDS_STATE;
-		//return ROTATION_RUN;
-	//}
+	_obj->steps_counter = 0;
+	return ROTATION_RUN;
 }
 
 STEPPER_INFO STEPMOTOR_PROCESS(STEPPER_OBJECT *_obj){
@@ -59,7 +57,25 @@ STEPPER_INFO STEPMOTOR_PROCESS(STEPPER_OBJECT *_obj){
 	if (_obj->coil_switch_counter==8){
 		_obj->coil_switch_counter = 0;
 	}
-	switch(_obj->internalState) {
+	
+	if (_obj->steps_counter == _obj->distance_step_counter){
+		if (_obj->internalState == MOVE_FORWARD_STATE){
+		_obj->internalState = MOVE_FORWARD_FINISH;
+		}else{
+			_obj->internalState = MOVE_BACKWORDS_FINISH;
+		}
+		
+	}
+	_obj->steps_counter++;
+	
+	switch(_obj->internalState){
+		case MOVE_BACKWORDS_FINISH:
+		case MOVE_FORWARD_FINISH:
+			MOTOR_PIN1_OFF;
+			MOTOR_PIN2_OFF;
+			MOTOR_PIN3_OFF;
+			MOTOR_PIN4_OFF;
+			return ROTATION_DONE;
 		case MOVE_FORWARD_STATE:
 		_obj->coil_switch_counter++;
 			switch(_obj->coil_switch_counter){
@@ -205,6 +221,7 @@ STEPPER_INFO STEPMOTOR_PROCESS(STEPPER_OBJECT *_obj){
 		break;	
 	
 	}
+	return ROTATION_RUN;
 }
 
 
