@@ -1,0 +1,7 @@
+$ cat .gitignore
+*.[oa]
+*~
+*.atsln
+*.cproj
+*.xml
+/stepper-motor/Debug
