@@ -27,6 +27,7 @@
 #define ONEROTATION_TOSTEP 50
 #define ONEROTATION_LENGTH 5  //how far screw move on One rotation motor [mm]
 
+//ADD function STEPMOTOR_PROCESS- where can choose direction rotation
 
 typedef enum{
 	ROTATION_DONE = -1,
