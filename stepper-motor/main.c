@@ -30,8 +30,8 @@ int main(void)
 		PORTE.DIRSET	=	PIN0_bm|PIN1_bm|PIN2_bm|PIN3_bm|PIN4_bm;
 		PORTE.DIRCLR    =   PIN5_bm;
 		PORTE.PIN5CTRL	=	PORT_OPC_PULLUP_gc;	
-		uint16_t t = 1250;
-		STEPMOTOR_move_forward(&_obj,4,5);
+		STEPMOTOR_INIT(&_obj);
+		STEPMOTOR_move_forward(&_obj,4,1);
     /* Replace with your application code */
 	sei();    
     while (1) 
@@ -43,6 +43,7 @@ int main(void)
 				if((licz>15100)&&(PORTE.IN & PIN5_bm)){
 					licz=0;
 					TCC0.PER=TCC0.PER-1;
+					STEPMOTOR_move_backwards(&_obj,4,1);
 					break;
 				}
 				
@@ -59,74 +60,6 @@ int main(void)
 static uint8_t counter = 0;
 ISR(TCC0_OVF_vect)
 {   
-	if (counter>=8)
-	{
-		counter = 0;
-	}
-	counter++;
-	switch(counter){
-		case 1:{
-			MOTOR_PIN1_ON;
-			MOTOR_PIN2_OFF;
-			MOTOR_PIN3_ON;
-			MOTOR_PIN4_OFF;
-			break;
-		}
-		case 2:{
-			MOTOR_PIN1_ON;
-			MOTOR_PIN2_OFF;
-			MOTOR_PIN3_ON;
-			MOTOR_PIN4_ON;
-			break;
-		}
-		case 3:{
-			MOTOR_PIN1_ON;
-			MOTOR_PIN2_OFF;
-			MOTOR_PIN3_OFF;
-			MOTOR_PIN4_ON;
-			break;
-		}
-		case 4:{
-			MOTOR_PIN1_ON;
-			MOTOR_PIN2_ON;
-			MOTOR_PIN3_OFF;
-			MOTOR_PIN4_ON;
-			break;
-		}
-		case 5:{
-			MOTOR_PIN1_OFF;
-			MOTOR_PIN2_ON;
-			MOTOR_PIN3_OFF;
-			MOTOR_PIN4_ON;
-			break;
-		}
-		case 6:{
-			MOTOR_PIN1_OFF;
-			MOTOR_PIN2_ON;
-			MOTOR_PIN3_ON;
-			MOTOR_PIN4_ON;
-			break;
-		}
-		case 7:{
-			MOTOR_PIN1_OFF;
-			MOTOR_PIN2_ON;
-			MOTOR_PIN3_ON;
-			MOTOR_PIN4_OFF;
-			break;
-		}
-		case 8:{
-			MOTOR_PIN1_ON;
-			MOTOR_PIN2_ON;
-			MOTOR_PIN3_ON;
-			MOTOR_PIN4_OFF;
-			break;
-		}
-		default:{
-			for(int i = 0; i<counter;i++){
-			TEST_GL;
-			_delay_ms(1000);
-			}
-			break;
-		}
-	}
+	STEPMOTOR_PROCESS(&_obj);
+
 }

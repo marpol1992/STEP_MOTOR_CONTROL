@@ -27,6 +27,7 @@
 #define ONEROTATION_TOSTEP 50
 #define ONEROTATION_LENGTH 5  //how far screw move on One rotation motor [mm]
 
+
 typedef enum{
 	ROTATION_DONE = -1,
 	ROTATION_ERROR = 0,
@@ -34,13 +35,15 @@ typedef enum{
 }	STEPPER_INFO;
 
 typedef enum{
-	MOVE_FORWARD_STATE = 0,
+	MOVE_FORWARD_STATE = 1,
 	MOVE_BACKWORDS_STATE,
 	MOVE_FORWARD_FINISH,
 	MOVE_BACKWORDS_FINISH,
+	INIT,
 }STEPMOTOR_PROCESS_STATE;
 
 typedef struct{
+	uint16_t delay;
 	uint8_t speed;
 	uint16_t distance;
 	uint32_t steps_counter;
@@ -50,10 +53,10 @@ typedef struct{
 
 }STEPPER_OBJECT;
 
-STEPPER_INFO STEPMOTOR_move_forward(STEPPER_OBJECT *_obj, uint16_t distance, uint8_t speed);
-STEPPER_INFO STEPMOTOR_move_backwards(STEPPER_OBJECT *_obj, uint16_t distance, uint8_t speed);
+STEPPER_INFO STEPMOTOR_move_forward(STEPPER_OBJECT *_obj, uint16_t distance, uint16_t speed);
+STEPPER_INFO STEPMOTOR_move_backwards(STEPPER_OBJECT *_obj, uint16_t distance, uint16_t speed);
 STEPPER_INFO STEPMOTOR_PROCESS(STEPPER_OBJECT *_obj);
-
+STEPPER_INFO STEPMOTOR_INIT(STEPPER_OBJECT *_obj);
 STEPMOTOR_PROCESS_STATE STEPMOTOR_getState(STEPPER_OBJECT* _obj);
 void lenght_toStep(STEPPER_OBJECT *_obj);
 
