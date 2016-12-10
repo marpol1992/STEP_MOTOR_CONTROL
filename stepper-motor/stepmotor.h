@@ -18,13 +18,16 @@
 #define MOTOR_PIN2_ON	PORTE.OUTSET = PIN2_bm
 #define MOTOR_PIN3_ON   PORTE.OUTSET = PIN3_bm
 #define MOTOR_PIN4_ON   PORTE.OUTSET = PIN4_bm
+#define ENA_ON			PORTE.OUTSET = PIN5_bm
+#define ENB_ON			PORTE.OUTSET = PIN6_bm
 
 #define MOTOR_PIN1_OFF  PORTE.OUTCLR = PIN1_bm
 #define MOTOR_PIN2_OFF	PORTE.OUTCLR = PIN2_bm
 #define MOTOR_PIN3_OFF	PORTE.OUTCLR = PIN3_bm
 #define MOTOR_PIN4_OFF	PORTE.OUTCLR = PIN4_bm
-
-#define ONEROTATION_TOSTEP 50
+#define ENA_OFF			PORTE.OUTCLR = PIN5_bm
+#define ENB_OFF			PORTE.OUTCLR = PIN6_bm
+#define ONEROTATION_TOSTEP 400
 #define ONEROTATION_LENGTH 5  //how far screw move on One rotation motor [mm]
 
 //ADD function STEPMOTOR_PROCESS- where can choose direction rotation
@@ -46,7 +49,7 @@ typedef enum{
 
 typedef struct{
 	uint16_t delay;
-	uint8_t speed;
+	uint16_t speed;
 	uint16_t distance;
 	uint32_t steps_counter;
 	uint32_t distance_step_counter;

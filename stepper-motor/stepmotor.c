@@ -19,7 +19,7 @@ STEPPER_INFO STEPMOTOR_INIT(STEPPER_OBJECT *_obj){
 
 STEPPER_INFO lenght_toStep(STEPPER_OBJECT *_obj){
  
-	_obj->distance_step_counter=((_obj->distance)/ONEROTATION_LENGTH)*ONEROTATION_TOSTEP*8;
+	_obj->distance_step_counter=((_obj->distance)/ONEROTATION_LENGTH)*ONEROTATION_TOSTEP;
 	return PROCESS_OK;
 }
 STEPMOTOR_PROCESS_STATE STEPMOTOR_getState(STEPPER_OBJECT *_obj){
@@ -28,22 +28,31 @@ STEPMOTOR_PROCESS_STATE STEPMOTOR_getState(STEPPER_OBJECT *_obj){
 
 
 STEPPER_INFO STEPMOTOR_move_forward(STEPPER_OBJECT *_obj, uint16_t distance, uint16_t speed){
+	if((_obj->internalState == MOVE_FORWARD_FINISH) | (_obj->internalState == INIT)  | (_obj->internalState == MOVE_BACKWORDS_STATE) |  (_obj->internalState == MOVE_BACKWORDS_FINISH)){ //opcja czekania az skonczy sie jaki kolwiek ruch, ma byc mozliwosc zmiany kierunku bez wplywu na zakonczenie obrotu
 	_obj->distance = distance;
 	_obj->speed	= speed;
 	_obj->coil_switch_counter = 0;
 	if(lenght_toStep(_obj));
 	_obj->internalState = MOVE_FORWARD_STATE;
 	_obj->steps_counter = 0;
-	return ROTATION_RUN;
+	ENA_ON;
+	ENB_ON;
+	return ROTATION_DONE;
+	}else return ROTATION_RUN;
 }
 
 STEPPER_INFO STEPMOTOR_move_backwards(STEPPER_OBJECT *_obj, uint16_t distance, uint16_t speed){
+	if((_obj->internalState == MOVE_BACKWORDS_FINISH) | (_obj->internalState == INIT)  | (_obj->internalState == MOVE_FORWARD_STATE) | (_obj->internalState == MOVE_FORWARD_FINISH)){
 	_obj->distance = distance;
 	_obj->speed	= speed;
 	_obj->coil_switch_counter = 0;
 	lenght_toStep(_obj);
 	_obj->internalState = MOVE_BACKWORDS_STATE;
 	_obj->steps_counter = 0;
+	ENA_ON;
+	ENB_ON;
+	return ROTATION_DONE;
+	}else
 	return ROTATION_RUN;
 }
 
@@ -149,7 +158,6 @@ STEPPER_INFO STEPMOTOR_PROCESS(STEPPER_OBJECT *_obj){
 			}
 		 break;
 		
-   
 		case MOVE_BACKWORDS_STATE:
 		_obj->coil_switch_counter++;
 			switch(_obj->coil_switch_counter){

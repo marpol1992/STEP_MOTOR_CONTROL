@@ -27,15 +27,16 @@ int main(void)
 	 TCC0.CTRLA        =    TC_TC0_CLKSEL_DIV256_gc;       // ustawienie preskalera i uruchomienie timera
 	 TCC0.PER    =   100;
 	 
-		PORTE.DIRSET	=	PIN0_bm|PIN1_bm|PIN2_bm|PIN3_bm|PIN4_bm;
+		PORTE.DIRSET	=	PIN0_bm|PIN1_bm|PIN2_bm|PIN3_bm|PIN4_bm|PIN5_bm|PIN6_bm;
 		PORTE.DIRCLR    =   PIN5_bm;
 		PORTE.PIN5CTRL	=	PORT_OPC_PULLUP_gc;	
 		STEPMOTOR_INIT(&_obj);
-		STEPMOTOR_move_forward(&_obj,10,1);
+		STEPMOTOR_move_forward(&_obj,10,2);
     /* Replace with your application code */
 	sei();    
     while (1) 
     {
+		//if(STEPMOTOR_move_forward(&_obj,10,2) == ROTATION_DONE);
 		if(!(PORTE.IN & PIN5_bm)) /* je?eli przycisk FLIP jest wci?ni?ty*/ {
 			while(1){
 				uint32_t licz;
