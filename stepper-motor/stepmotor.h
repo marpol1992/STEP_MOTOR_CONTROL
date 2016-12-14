@@ -1,10 +1,9 @@
-/*
+/****************************************************************
  * step_motor.h
  *
- * Created: 23.11.2016 19:03:32
- *  Author: marek
- */ 
-
+ * Created: 23.11.2016 19:03:57
+ *  Author: MAREK WUDARCZYK
+ ****************************************************************/ 
 
 #ifndef STEPMOTOR_H_
 #define STEPMOTOR_H_
@@ -30,7 +29,6 @@
 #define ONEROTATION_TOSTEP 400
 #define ONEROTATION_LENGTH 5  //how far screw move on One rotation motor [mm]
 
-//ADD function STEPMOTOR_PROCESS- where can choose direction rotation
 
 typedef enum{
 	ROTATION_DONE = 1,
@@ -55,7 +53,6 @@ typedef struct{
 	uint32_t distance_step_counter;
 	uint8_t  coil_switch_counter;
 	STEPMOTOR_PROCESS_STATE internalState;
-
 }STEPPER_OBJECT;
 
 STEPPER_INFO STEPMOTOR_move_forward(STEPPER_OBJECT *_obj, uint16_t distance, uint16_t speed);
